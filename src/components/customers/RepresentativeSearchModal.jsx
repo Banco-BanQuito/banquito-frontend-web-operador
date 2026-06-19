@@ -220,7 +220,7 @@ const RepresentativeSearchModal = ({ isOpen, onClose, onSelect }) => {
                       </svg>
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-slate-800">{result.name}</p>
+                      <p className="text-sm font-bold text-slate-800">{result.fullName || `${result.firstName || ''} ${result.lastName || ''}`.trim()}</p>
                       <p className="text-xs text-slate-500 mt-0.5">
                         {result.identificationType} · {result.identification}
                       </p>

@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  const coreTarget = env.VITE_CORE_GATEWAY_TARGET || 'http://localhost:8000';
+  const partyTarget = env.VITE_PARTY_API_TARGET || 'http://localhost:8083';
   const accountCoreTarget = env.VITE_ACCOUNT_CORE_TARGET || 'http://localhost:8081';
 
   return {
@@ -11,13 +11,15 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 3004,
       proxy: {
-        '/api/v2/auth/login/staff': {
+        '/account': {
           target: accountCoreTarget,
           changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/account/, ''),
         },
-        '/api/v2': {
-          target: coreTarget,
+        '/party': {
+          target: partyTarget,
           changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/party/, ''),
         },
       },
     },

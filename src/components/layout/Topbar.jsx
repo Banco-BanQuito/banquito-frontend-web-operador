@@ -82,9 +82,18 @@ const Topbar = () => {
                 border: '1px solid #e9ecef',
               }}
             >
-              <div className="px-4 py-2 text-sm text-gray-700">
-                Acceso directo de operador
+              <div className="px-4 py-2 text-sm text-gray-500 border-bottom border-gray-100 italic">
+                Operador Intranet
               </div>
+              <button
+                onClick={() => auth.logout()}
+                className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 border-t border-gray-100 mt-1 font-semibold"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-6 0v-1m6-10V5a3 3 0 00-6 0v1" />
+                </svg>
+                Cerrar Sesión
+              </button>
             </div>
           )}
         </div>

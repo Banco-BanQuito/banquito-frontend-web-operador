@@ -179,6 +179,7 @@ export const CustomerCreatePage = () => {
 
     if (customerType === 'JURIDICO' && !selectedRepresentative) {
       setServerError('Debe seleccionar un representante legal válido antes de crear la empresa.');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
@@ -228,6 +229,7 @@ export const CustomerCreatePage = () => {
         msg = err.response?.data?.message || msg;
       }
       setServerError(msg);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setSubmitting(false);
     }
@@ -587,7 +589,7 @@ export const CustomerCreatePage = () => {
                       </svg>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold text-slate-800 truncate">{selectedRepresentative.name}</p>
+                      <p className="text-sm font-bold text-slate-800 truncate">{selectedRepresentative.fullName || `${selectedRepresentative.firstName || ''} ${selectedRepresentative.lastName || ''}`.trim()}</p>
                       <p className="text-xs text-slate-500 mt-0.5">
                         {selectedRepresentative.identificationType} · {selectedRepresentative.identification}
                       </p>

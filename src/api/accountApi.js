@@ -25,14 +25,5 @@ export const blockAccount = (accountNumber) =>
 export const suspendAccount = (accountNumber) =>
   axiosInstance.patch(ENDPOINTS.ACCOUNTS.SUSPEND(accountNumber));
 
-export const creditAccount = (accountNumber, data) =>
-  axiosInstance.post(ENDPOINTS.ACCOUNTS.CREDIT(accountNumber), data);
-
-export const transferFunds = (data) =>
-  axiosInstance.post(ENDPOINTS.ACCOUNTS.TRANSFER, data);
-
-export const getFavoriteAccount = (customerId) =>
-  axiosInstance.get(ENDPOINTS.ACCOUNTS.GET_FAVORITE(customerId));
-
 export const getAccountAvailability = (accountNumber) =>
-  axiosInstance.get(ENDPOINTS.ACCOUNTS.AVAILABILITY(accountNumber));
+  axiosInstance.get(ENDPOINTS.ACCOUNTS.BALANCE(accountNumber));

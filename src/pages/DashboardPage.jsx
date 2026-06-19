@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Users, Repeat, Building2, UserPlus, ArrowRight } from 'lucide-react';
+import { Users, Repeat, Building2, UserPlus, ArrowRight, ShieldCheck, Globe, Database } from 'lucide-react';
 
 const ICON_COLOR = '#4B5563';
 
@@ -40,6 +40,58 @@ export function DashboardPage() {
         <p className="page-description">
           Panel de control de la Intranet Banquito
         </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="bg-gradient-to-br from-[#0052a3] to-[#001f3f] p-6 rounded-2xl shadow-lg text-white">
+          <div className="flex justify-between items-start mb-4">
+            <div className="p-2 bg-white/10 rounded-lg">
+              <ShieldCheck size={24} />
+            </div>
+            <span className="text-xs font-bold bg-green-500/20 text-green-300 px-2 py-1 rounded-full border border-green-500/30">
+              CONECTADO
+            </span>
+          </div>
+          <h3 className="text-sm font-medium opacity-80">Estado del Sistema</h3>
+          <p className="text-2xl font-bold mt-1">Nube Activa</p>
+          <div className="mt-4 flex items-center gap-2 text-xs opacity-60">
+            <Database size={12} />
+            <span>PostgreSQL & MySQL Synced</span>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <div className="flex justify-between items-start mb-4">
+            <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
+              <Building2 size={24} />
+            </div>
+          </div>
+          <h3 className="text-sm font-medium text-gray-500">Sucursal Matriz</h3>
+          <p className="text-2xl font-bold text-gray-900 mt-1">BanQuito - Quito</p>
+          <p className="text-xs text-blue-600 font-semibold mt-4">Pichincha, EC</p>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <div className="flex justify-between items-start mb-4">
+            <div className="p-2 bg-purple-50 rounded-lg text-purple-600">
+              <Users size={24} />
+            </div>
+          </div>
+          <h3 className="text-sm font-medium text-gray-500">Perfil Operativo</h3>
+          <p className="text-2xl font-bold text-gray-900 mt-1">Gestión Staff</p>
+          <p className="text-xs text-purple-600 font-semibold mt-4">Nivel 2 Autorizado</p>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <div className="flex justify-between items-start mb-4">
+            <div className="p-2 bg-orange-50 rounded-lg text-orange-600">
+              <Globe size={24} />
+            </div>
+          </div>
+          <h3 className="text-sm font-medium text-gray-500">Infraestructura</h3>
+          <p className="text-2xl font-bold text-gray-900 mt-1">Multi-Cloud</p>
+          <p className="text-xs text-orange-600 font-semibold mt-4">136.112.87.173</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

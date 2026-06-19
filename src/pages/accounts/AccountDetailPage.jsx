@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getAccount, activateAccount, inactivateAccount, blockAccount, suspendAccount } from '../../api/accountApi';
-import { getTransactionHistory } from '../../api/transactionApi';
 import { formatCurrency, formatDate, formatDateTime, formatStatus } from '../../helpers/formatters';
 import StatusBadge from '../../components/ui/StatusBadge';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
@@ -27,16 +26,7 @@ export const AccountDetailPage = () => {
       const accountResponse = await getAccount(accountNumber);
       setAccount(accountResponse.data);
 
-      try {
-        const transactionsResponse = await getTransactionHistory(accountNumber);
-        setTransactions((transactionsResponse.data || []).slice(0, 10));
-      } catch (txErr) {
-        if (import.meta.env.DEV) {
-          console.warn('No se pudo cargar el historial de transacciones:', txErr);
-        }
-        setTransactions([]);
-        setHistoryError('No se pudo cargar el historial. Intente más tarde.');
-      }
+      setTransactions([]);
     } catch (err) {
       setError(err.response?.data?.message || 'Error al cargar cuenta');
     } finally {
@@ -186,12 +176,6 @@ export const AccountDetailPage = () => {
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold">Últimas Transacciones</h2>
-              <button
-                onClick={() => navigate(`/transacciones/historial/${accountNumber}`)}
-                className="text-blue-600 hover:text-blue-800"
-              >
-                Ver Historial Completo →
-              </button>
             </div>
 
             {historyError ? (

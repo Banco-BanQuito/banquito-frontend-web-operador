@@ -216,10 +216,9 @@ export const AccountCreatePage = () => {
         customerId: parseInt(formData.customerId),
         accountSubtypeId: parseInt(formData.accountSubtypeId),
         branchId: parseInt(formData.branchId),
-        initialBalance: formData.initialBalance
+        initialDeposit: formData.initialBalance
           ? parseFloat(formData.initialBalance)
           : 0,
-        isFavorite: formData.isFavorite,
       };
 
       const response = await createAccount(payload);

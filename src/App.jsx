@@ -1,9 +1,11 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 import Sidebar from './components/layout/Sidebar';
 import Topbar from './components/layout/Topbar';
 
+import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { CustomerSearchPage } from './pages/customers/CustomerSearchPage';
 import { CustomerDetailPage } from './pages/customers/CustomerDetailPage';
@@ -12,9 +14,8 @@ import { CustomerListPage } from './pages/customers/CustomerListPage';
 import { AccountDetailPage } from './pages/accounts/AccountDetailPage';
 import { AccountCreatePage } from './pages/accounts/AccountCreatePage';
 import { AccountAvailabilityPage } from './pages/accounts/AccountAvailabilityPage';
-import { TransactionFormPage } from './pages/transactions/TransactionFormPage';
-import { TransactionHistoryPage } from './pages/transactions/TransactionHistoryPage';
 import { BranchesPage } from './pages/BranchesPage';
+import { HolidayManagement } from './pages/HolidayPage';
 
 import './index.css';
 
@@ -44,8 +45,16 @@ const IntranetLayout = () => {
 const router = createBrowserRouter(
   [
     {
+      path: '/login',
+      element: <LoginPage />,
+    },
+    {
       path: '/',
-      element: <IntranetLayout />,
+      element: (
+        <ProtectedRoute>
+          <IntranetLayout />
+        </ProtectedRoute>
+      ),
       children: [
         { index: true, element: <Navigate to="dashboard" replace /> },
         { path: 'dashboard', element: <DashboardPage /> },
@@ -56,9 +65,8 @@ const router = createBrowserRouter(
         { path: 'cuentas/nueva', element: <AccountCreatePage /> },
         { path: 'cuentas/:accountNumber/disponibilidad', element: <AccountAvailabilityPage /> },
         { path: 'cuentas/:accountNumber', element: <AccountDetailPage /> },
-        { path: 'transacciones/nueva', element: <TransactionFormPage /> },
-        { path: 'transacciones/historial/:accountNumber', element: <TransactionHistoryPage /> },
         { path: 'sucursales', element: <BranchesPage /> },
+        { path: 'feriados', element: <HolidayManagement /> },
       ],
     },
     {
@@ -80,3 +88,4 @@ export default function App() {
     </AuthProvider>
   );
 }
+

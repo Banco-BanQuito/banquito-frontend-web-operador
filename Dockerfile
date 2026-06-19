@@ -1,10 +1,15 @@
-FROM node:20-alpine AS builder
+FROM node:18-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-ENV VITE_CORE_API_BASE_URL=/api/v2
-ENV VITE_ACCOUNT_CORE_BASE_URL=/api/v2
+
+ARG VITE_ACCOUNT_API_BASE_URL=/account/api/v2
+ARG VITE_PARTY_API_BASE_URL=/party/api/v2
+ARG VITE_ACCOUNTING_API_BASE_URL=http://localhost:8082/api/v2
+RUN printf "VITE_ACCOUNT_API_BASE_URL=%s\nVITE_PARTY_API_BASE_URL=%s\nVITE_ACCOUNTING_API_BASE_URL=%s\n" \
+    "$VITE_ACCOUNT_API_BASE_URL" "$VITE_PARTY_API_BASE_URL" "$VITE_ACCOUNTING_API_BASE_URL" \
+    > .env.production.local
 RUN npm run build
 
 FROM nginx:alpine

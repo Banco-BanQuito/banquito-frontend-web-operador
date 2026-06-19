@@ -1,4 +1,4 @@
-import axiosInstance from './axiosInstance';
+import axiosInstance from './partyAxiosInstance';
 import { ENDPOINTS } from '../config/environment';
 
 export const getAllBranches = () =>

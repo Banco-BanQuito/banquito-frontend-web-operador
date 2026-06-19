@@ -1,4 +1,4 @@
-import axiosInstance from './axiosInstance';
+import axiosInstance from './partyAxiosInstance';
 import { ENDPOINTS } from '../config/environment';
 
 export const getAllCustomers = () =>
@@ -17,7 +17,7 @@ export const updateCustomer = (id, data) =>
   axiosInstance.patch(ENDPOINTS.CUSTOMERS.UPDATE(id), data);
 
 export const getCustomerSubtypesByType = (customerType) =>
-  axiosInstance.get(ENDPOINTS.CUSTOMER_SUBTYPES.GET_ALL).then((response) => ({
+  axiosInstance.get(ENDPOINTS.CUSTOMERS.SUBTYPES).then((response) => ({
     ...response,
     data: Array.isArray(response.data)
       ? response.data.filter((item) => String(item.customerType || '').toUpperCase() === String(customerType || '').toUpperCase())

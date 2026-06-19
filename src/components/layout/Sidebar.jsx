@@ -13,7 +13,6 @@ const menuItems = [
   { path: '/dashboard',           label: 'Dashboard',     Icon: LayoutDashboard },
   { path: '/clientes',            label: 'Clientes',      Icon: Users },
   { path: '/cuentas/nueva',       label: 'Nueva Cuenta',  Icon: UserPlus },
-  { path: '/transacciones/nueva', label: 'Transacciones', Icon: Repeat },
   { path: '/sucursales',          label: 'Sucursales',    Icon: Building2 },
   { path: '/feriados',            label: 'Feriados',      Icon: CalendarDays },
 ];

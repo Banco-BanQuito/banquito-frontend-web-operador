@@ -1,20 +1,19 @@
-function trimTrailingSlash(value) {
-  return value.endsWith('/') ? value.slice(0, -1) : value;
-}
+const getPartyUrl = () => {
+  const url = import.meta.env.VITE_PARTY_API_BASE_URL || '/party/api/v2';
+  const normalized = url.endsWith('/api/v2') ? url : `${url.replace(/\/$/, '')}/api/v2`;
+  return normalized.endsWith('/') ? normalized : `${normalized}/`;
+};
 
-function hostUrl(port) {
-  if (typeof window === 'undefined') {
-    return `http://localhost:${port}`;
-  }
-  return `${window.location.protocol}//${window.location.hostname}:${port}`;
-}
-
-const coreGateway = trimTrailingSlash(import.meta.env.VITE_CORE_API_BASE_URL || `${hostUrl(8000)}/api/v2`);
-const accountCoreDirect = trimTrailingSlash(import.meta.env.VITE_ACCOUNT_CORE_BASE_URL || `${hostUrl(8081)}/api/v2`);
+const getAccountUrl = () => {
+  const url = import.meta.env.VITE_ACCOUNT_API_BASE_URL || '/account/api/v2';
+  const normalized = url.endsWith('/api/v2') ? url : `${url.replace(/\/$/, '')}/api/v2`;
+  return normalized.endsWith('/') ? normalized : `${normalized}/`;
+};
 
 const ENV = {
-  API_BASE_URL: coreGateway,
-  ACCOUNT_CORE_BASE_URL: accountCoreDirect,
+  API_BASE_URL: getAccountUrl(),
+  PARTY_API_BASE_URL: getPartyUrl(),
+  ACCOUNTING_API_BASE_URL: import.meta.env.VITE_ACCOUNTING_API_BASE_URL || 'http://localhost:8082/api/v2',
   API_TIMEOUT: Number(import.meta.env.VITE_API_TIMEOUT || 10000),
   APP_NAME: import.meta.env.VITE_APP_NAME || 'BanQuito Operador',
   ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT || 'development',
@@ -23,54 +22,43 @@ const ENV = {
 };
 
 export const ENDPOINTS = {
-  CUSTOMERS: {
-    GET_ALL: '/customers',
-    GET: (id) => `/customers/${id}`,
-    SEARCH: (_type, identification) => `/customers/${identification}`,
-    CREATE: '/customers',
-    UPDATE: (id) => `/customers/${id}`,
-    STATUS: (id, status) => `/customers/${id}/status/${status}`,
+  AUTH: {
+    LOGIN_STAFF: 'auth/login/staff',
+    LOGIN_CUSTOMER: 'auth/login',
   },
 
-  CUSTOMER_SUBTYPES: {
-    GET_ALL: '/customer-subtypes',
-    GET_BY_TYPE: (customerType) => `/customer-subtypes?customerType=${encodeURIComponent(customerType)}`,
+  CUSTOMERS: {
+    GET_ALL: 'customers',
+    GET: (id) => `customers/${id}`,
+    SEARCH: (_type, identification) => `customers/${identification}`,
+    CREATE: 'customers',
+    UPDATE: (id) => `customers/${id}`,
+    STATUS: (id, status) => `customers/${id}/status/${status}`,
+    SUBTYPES: 'customer-subtypes',
   },
 
   ACCOUNTS: {
-    GET: (accountIdOrNumber) => `/accounts/${accountIdOrNumber}`,
-    CREATE: '/accounts',
-    SUBTYPES: '/account-subtypes',
-    GET_BY_CUSTOMER: (customerId) => `/accounts/customer/${customerId}`,
-    BALANCE: (accountId) => `/accounts/${accountId}/balance`,
-    TRANSACTIONS: (accountId) => `/accounts/${accountId}/transactions`,
-    ACTIVATE: (accountNumber) => `/accounts/${accountNumber}/activate`,
-    INACTIVATE: (accountNumber) => `/accounts/${accountNumber}/inactivate`,
-    BLOCK: (accountNumber) => `/accounts/${accountNumber}/block`,
-    SUSPEND: (accountNumber) => `/accounts/${accountNumber}/suspend`,
-    CREDIT: () => '/accounts/teller/deposit',
-    DEPOSIT: '/accounts/teller/deposit',
-    WITHDRAWAL: '/accounts/teller/withdrawal',
-    TRANSFER: '/accounts/transfer/p2p',
-    GET_FAVORITE: (customerId) => `/accounts/customer/${customerId}/favorite`,
-    AVAILABILITY: (accountId) => `/accounts/${accountId}/balance`,
-  },
-
-  TRANSACTIONS: {
-    DEBIT: '/accounts/teller/withdrawal',
-    CREDIT: '/accounts/teller/deposit',
-    TRANSFER: '/accounts/transfer/p2p',
-    HISTORY: (accountId) => `/accounts/${accountId}/transactions`,
+    GET: (accountIdOrNumber) => `accounts/${accountIdOrNumber}`,
+    CREATE: 'accounts/open',
+    SUBTYPES: 'accounts/subtypes',
+    GET_BY_CUSTOMER: (customerId) => `accounts/customer/${customerId}`,
+    BALANCE: (accountId) => `accounts/${accountId}/balance`,
+    TRANSACTIONS: (accountId) => `accounts/${accountId}/transactions`,
+    ACTIVATE: (accountNumber) => `accounts/${accountNumber}/activate`,
+    INACTIVATE: (accountNumber) => `accounts/${accountNumber}/inactivate`,
+    BLOCK: (accountNumber) => `accounts/${accountNumber}/block`,
+    SUSPEND: (accountNumber) => `accounts/${accountNumber}/suspend`,
   },
 
   BRANCHES: {
-    GET_ALL: '/branches',
-    GET: (code) => `/branches/${code}`,
-    CREATE: '/branches',
+    GET_ALL: 'branches',
+    GET: (code) => `branches/${code}`,
+    CREATE: 'branches',
   },
 
   HOLIDAYS: {
-    CHECK_BUSINESS_DAY: (date) => `/calendar/holidays/check?date=${encodeURIComponent(date)}`,
+    GET_ALL: 'holidays',
+    CHECK_BUSINESS_DAY: (date) => `holidays/business-day?date=${date}`,
   },
 };
 

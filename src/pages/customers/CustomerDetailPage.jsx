@@ -277,7 +277,7 @@ export const CustomerDetailPage = () => {
                     {accounts.map((account) => (
                       <tr key={account.accountNumber} className="border-b hover:bg-gray-50">
                         <td className="p-3 font-semibold">{account.accountNumber || '—'}</td>
-                        <td className="p-3">{account.accountSubtypeDescription || account.accountType || '—'}</td>
+                        <td className="p-3">{account.accountSubtypeName || '—'}</td>
                         <td className="p-3">{account.branchName || '—'}</td>
                         <td className="p-3">{account.availableBalance != null ? formatCurrency(account.availableBalance) : '—'}</td>
                         <td className="p-3">

@@ -1,12 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { getClearingFiles, getClearingFileDownloadUrl, consolidateClearingFiles } from '../api/clearingApi';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 
-const fileTypeLabels = {
-  CICLO: 'Ciclo (30s)',
-  LOTE: 'Lote',
-  CONSOLIDADO: 'Consolidado diario',
-};
+const todayKey = () => new Date().toISOString().slice(0, 10);
 
 export const BancoCentralPage = () => {
   const [files, setFiles] = useState([]);
@@ -36,6 +32,27 @@ export const BancoCentralPage = () => {
     }
   };
 
+  const cycleFiles = useMemo(
+    () => files.filter((f) => f.fileType !== 'CONSOLIDADO'),
+    [files]
+  );
+
+  // Si quedaron duplicados de pruebas anteriores, solo mostramos el mas reciente de cada dia.
+  const consolidatedFiles = useMemo(() => {
+    const byDay = new Map();
+    for (const file of files) {
+      if (file.fileType !== 'CONSOLIDADO') continue;
+      const day = (file.periodFrom || file.generatedAt || '').slice(0, 10);
+      const current = byDay.get(day);
+      if (!current || new Date(file.generatedAt) > new Date(current.generatedAt)) {
+        byDay.set(day, file);
+      }
+    }
+    return [...byDay.values()].sort((a, b) => new Date(b.generatedAt) - new Date(a.generatedAt));
+  }, [files]);
+
+  const todayConsolidated = consolidatedFiles.find((f) => (f.periodFrom || '').slice(0, 10) === todayKey());
+
   const handleConsolidate = async () => {
     setConsolidating(true);
     setNotice('');
@@ -60,95 +77,137 @@ export const BancoCentralPage = () => {
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Archivos para el Banco Central</h1>
-          <p className="text-gray-500 text-sm mt-1">
-            Ciclos individuales (cada 30s, para seguimiento operativo) y el archivo consolidado diario
-            que agrupa todos los movimientos interbancarios de una hora a otra, tal como se envía al Banco Central.
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <button
-            onClick={handleConsolidate}
-            disabled={consolidating}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-indigo-300"
-          >
-            {consolidating ? 'Generando...' : 'Generar consolidado de hoy'}
-          </button>
-          <button
-            onClick={fetchFiles}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            Actualizar
-          </button>
-        </div>
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-800">Archivos para el Banco Central</h1>
+        <p className="text-gray-500 text-sm mt-1">
+          El consolidado diario es el archivo real que se envía al Banco Central (todos los movimientos de un día,
+          de una hora a otra). Los ciclos individuales son solo para seguimiento operativo interno cada 30s.
+        </p>
       </div>
 
       {notice && (
-        <div className="bg-green-50 border border-green-200 text-green-700 rounded-lg p-4 mb-4">
+        <div className="bg-green-50 border border-green-200 text-green-700 rounded-lg p-4">
           {notice}
         </div>
       )}
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 mb-4">
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4">
           {error}
         </div>
       )}
 
-      <div className="bg-white p-6 rounded-lg shadow">
-        {files.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-gray-100 border-b">
-                <tr>
-                  <th className="p-3">Tipo</th>
-                  <th className="p-3">Generado</th>
-                  <th className="p-3">Registros OFF-US</th>
-                  <th className="p-3">Monto total</th>
-                  <th className="p-3">Estado</th>
-                  <th className="p-3">Descargar</th>
-                </tr>
-              </thead>
-              <tbody>
-                {files.map((file) => (
-                  <tr key={file.id} className={`border-b hover:bg-gray-50 ${file.fileType === 'CONSOLIDADO' ? 'bg-indigo-50' : ''}`}>
-                    <td className="p-3">
-                      <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold ${
-                        file.fileType === 'CONSOLIDADO' ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-700'
-                      }`}>
-                        {fileTypeLabels[file.fileType] || file.fileType || 'Ciclo (30s)'}
-                      </span>
-                    </td>
-                    <td className="p-3">{file.generatedAt ? new Date(file.generatedAt).toLocaleString('es-EC') : '—'}</td>
-                    <td className="p-3 font-semibold">{file.offUsRecords}</td>
-                    <td className="p-3">${Number(file.totalAmount || 0).toFixed(2)}</td>
-                    <td className="p-3">
-                      <span className="inline-block px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                        {file.status}
-                      </span>
-                    </td>
-                    <td className="p-3">
-                      <div className="flex gap-3">
-                        <a className="text-blue-600 hover:underline" href={getClearingFileDownloadUrl(file.id, 'csv')}>CSV</a>
-                        <a className="text-blue-600 hover:underline" href={getClearingFileDownloadUrl(file.id, 'txt')}>TXT</a>
-                        <a className="text-blue-600 hover:underline" href={getClearingFileDownloadUrl(file.id, 'pdf')}>PDF</a>
-                      </div>
-                    </td>
+      {/* ── Consolidado diario ── */}
+      <section>
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="text-lg font-semibold text-indigo-900">Consolidado diario (archivo real al Banco Central)</h2>
+          <button
+            onClick={handleConsolidate}
+            disabled={consolidating || Boolean(todayConsolidated)}
+            title={todayConsolidated ? 'Ya existe un consolidado generado hoy' : ''}
+            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-indigo-300"
+          >
+            {consolidating ? 'Generando...' : todayConsolidated ? 'Consolidado de hoy ya generado' : 'Generar consolidado de hoy'}
+          </button>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow border-2 border-indigo-100">
+          {consolidatedFiles.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-indigo-50 border-b">
+                  <tr>
+                    <th className="p-3">Periodo</th>
+                    <th className="p-3">Generado</th>
+                    <th className="p-3">Movimientos</th>
+                    <th className="p-3">Monto total</th>
+                    <th className="p-3">Descargar</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="text-gray-600 py-8 text-center">
-            Aún no se ha generado ningún archivo. Los ciclos se generan automáticamente cuando hay transferencias
-            interbancarias pendientes; el consolidado diario se genera automáticamente a las 20:00 o puedes generarlo manualmente arriba.
-          </p>
-        )}
-      </div>
+                </thead>
+                <tbody>
+                  {consolidatedFiles.map((file) => (
+                    <tr key={file.id} className="border-b hover:bg-indigo-50">
+                      <td className="p-3 font-semibold">{(file.periodFrom || '').slice(0, 10) || '—'}</td>
+                      <td className="p-3">{file.generatedAt ? new Date(file.generatedAt).toLocaleString('es-EC') : '—'}</td>
+                      <td className="p-3">{file.offUsRecords}</td>
+                      <td className="p-3">${Number(file.totalAmount || 0).toFixed(2)}</td>
+                      <td className="p-3">
+                        <div className="flex gap-3">
+                          <a className="text-indigo-600 hover:underline" href={getClearingFileDownloadUrl(file.id, 'csv')}>CSV</a>
+                          <a className="text-indigo-600 hover:underline" href={getClearingFileDownloadUrl(file.id, 'txt')}>TXT</a>
+                          <a className="text-indigo-600 hover:underline" href={getClearingFileDownloadUrl(file.id, 'pdf')}>PDF</a>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-gray-600 py-6 text-center">
+              Aún no se ha generado el consolidado de hoy. Se genera automáticamente a las 20:00, o puedes generarlo
+              manualmente con el botón de arriba (solo se permite uno por día).
+            </p>
+          )}
+        </div>
+      </section>
+
+      {/* ── Ciclos individuales ── */}
+      <section>
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="text-lg font-semibold text-gray-700">Ciclos individuales (seguimiento operativo)</h2>
+          <button
+            onClick={fetchFiles}
+            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+          >
+            Actualizar
+          </button>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow">
+          {cycleFiles.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-gray-100 border-b">
+                  <tr>
+                    <th className="p-3">Ciclo generado</th>
+                    <th className="p-3">Registros OFF-US</th>
+                    <th className="p-3">Monto total</th>
+                    <th className="p-3">Estado</th>
+                    <th className="p-3">Descargar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cycleFiles.map((file) => (
+                    <tr key={file.id} className="border-b hover:bg-gray-50">
+                      <td className="p-3">{file.generatedAt ? new Date(file.generatedAt).toLocaleString('es-EC') : '—'}</td>
+                      <td className="p-3 font-semibold">{file.offUsRecords}</td>
+                      <td className="p-3">${Number(file.totalAmount || 0).toFixed(2)}</td>
+                      <td className="p-3">
+                        <span className="inline-block px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                          {file.status}
+                        </span>
+                      </td>
+                      <td className="p-3">
+                        <div className="flex gap-3">
+                          <a className="text-blue-600 hover:underline" href={getClearingFileDownloadUrl(file.id, 'csv')}>CSV</a>
+                          <a className="text-blue-600 hover:underline" href={getClearingFileDownloadUrl(file.id, 'txt')}>TXT</a>
+                          <a className="text-blue-600 hover:underline" href={getClearingFileDownloadUrl(file.id, 'pdf')}>PDF</a>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-gray-600 py-6 text-center">
+              Aún no hay ciclos generados. Se generan automáticamente cada 30s cuando hay transferencias interbancarias pendientes.
+            </p>
+          )}
+        </div>
+      </section>
     </div>
   );
 };

@@ -6,6 +6,7 @@ import {
   Repeat,
   Building2,
   CalendarDays,
+  Landmark,
   Menu,
 } from 'lucide-react';
 
@@ -15,6 +16,7 @@ const menuItems = [
   { path: '/cuentas/nueva',       label: 'Nueva Cuenta',  Icon: UserPlus },
   { path: '/sucursales',          label: 'Sucursales',    Icon: Building2 },
   { path: '/feriados',            label: 'Feriados',      Icon: CalendarDays },
+  { path: '/banco-central',       label: 'Banco Central', Icon: Landmark },
 ];
 
 const Sidebar = ({ isOpen, onToggle }) => {

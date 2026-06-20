@@ -16,6 +16,7 @@ import { AccountCreatePage } from './pages/accounts/AccountCreatePage';
 import { AccountAvailabilityPage } from './pages/accounts/AccountAvailabilityPage';
 import { BranchesPage } from './pages/BranchesPage';
 import { HolidayManagement } from './pages/HolidayPage';
+import { BancoCentralPage } from './pages/BancoCentralPage';
 
 import './index.css';
 
@@ -67,6 +68,7 @@ const router = createBrowserRouter(
         { path: 'cuentas/:accountNumber', element: <AccountDetailPage /> },
         { path: 'sucursales', element: <BranchesPage /> },
         { path: 'feriados', element: <HolidayManagement /> },
+        { path: 'banco-central', element: <BancoCentralPage /> },
       ],
     },
     {

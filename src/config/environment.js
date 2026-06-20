@@ -14,6 +14,7 @@ const ENV = {
   API_BASE_URL: getAccountUrl(),
   PARTY_API_BASE_URL: getPartyUrl(),
   ACCOUNTING_API_BASE_URL: import.meta.env.VITE_ACCOUNTING_API_BASE_URL || 'http://localhost:8082/api/v2',
+  CLEARING_API_BASE_URL: import.meta.env.VITE_CLEARING_API_BASE_URL || '/clearing/api/v2',
   API_TIMEOUT: Number(import.meta.env.VITE_API_TIMEOUT || 10000),
   APP_NAME: import.meta.env.VITE_APP_NAME || 'BanQuito Operador',
   ENVIRONMENT: import.meta.env.VITE_ENVIRONMENT || 'development',

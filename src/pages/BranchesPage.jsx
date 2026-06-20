@@ -94,7 +94,9 @@ export const BranchesPage = () => {
                   <th className="p-3">Código</th>
                   <th className="p-3">Nombre</th>
                   <th className="p-3">Ciudad</th>
-                  <th className="p-3">Fecha de Creación</th>
+                  {branches.some((branch) => branch.creationDate) && (
+                    <th className="p-3">Fecha de Creación</th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -103,11 +105,13 @@ export const BranchesPage = () => {
                     <td className="p-3 font-semibold">{branch.branchCode}</td>
                     <td className="p-3">{branch.name}</td>
                     <td className="p-3">{branch.city}</td>
-                    <td className="p-3 text-gray-600">
-                      {branch.creationDate 
-                        ? new Date(branch.creationDate).toLocaleDateString('es-ES') 
-                        : 'N/A'}
-                    </td>
+                    {branches.some((b) => b.creationDate) && (
+                      <td className="p-3 text-gray-600">
+                        {branch.creationDate
+                          ? new Date(branch.creationDate).toLocaleDateString('es-ES')
+                          : ''}
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>

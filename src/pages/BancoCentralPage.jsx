@@ -59,7 +59,7 @@ export const BancoCentralPage = () => {
     setError('');
     try {
       await consolidateClearingFiles();
-      setNotice('Archivo consolidado del día generado correctamente.');
+      setNotice(todayConsolidated ? 'Consolidado del día actualizado correctamente.' : 'Archivo consolidado del día generado correctamente.');
       await fetchFiles();
     } catch (err) {
       setError(
@@ -104,11 +104,11 @@ export const BancoCentralPage = () => {
           <h2 className="text-lg font-semibold text-indigo-900">Consolidado diario (archivo real al Banco Central)</h2>
           <button
             onClick={handleConsolidate}
-            disabled={consolidating || Boolean(todayConsolidated)}
-            title={todayConsolidated ? 'Ya existe un consolidado generado hoy' : ''}
+            disabled={consolidating}
+            title={todayConsolidated ? 'Vuelve a generarlo para incluir los movimientos mas recientes del dia' : ''}
             className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-indigo-300"
           >
-            {consolidating ? 'Generando...' : todayConsolidated ? 'Consolidado de hoy ya generado' : 'Generar consolidado de hoy'}
+            {consolidating ? 'Generando...' : todayConsolidated ? 'Actualizar consolidado de hoy' : 'Generar consolidado de hoy'}
           </button>
         </div>
 

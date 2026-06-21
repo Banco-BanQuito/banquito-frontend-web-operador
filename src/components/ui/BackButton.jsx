@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { ArrowLeft } from 'lucide-react';
 
 export default function BackButton({ to = -1 }) {
@@ -14,3 +15,7 @@ export default function BackButton({ to = -1 }) {
     </button>
   );
 }
+
+BackButton.propTypes = {
+  to: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+};

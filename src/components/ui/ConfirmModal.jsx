@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { createPortal } from 'react-dom';
 
 const ConfirmModal = ({
@@ -84,6 +85,17 @@ const ConfirmModal = ({
     </div>,
     document.body
   );
+};
+
+ConfirmModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  title: PropTypes.node,
+  message: PropTypes.node,
+  onConfirm: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  confirmText: PropTypes.string,
+  cancelText: PropTypes.string,
+  isLoading: PropTypes.bool,
 };
 
 export default ConfirmModal;

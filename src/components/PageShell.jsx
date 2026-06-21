@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export function PageShell({ title, description, children }) {
   return (
     <div className="px-8 py-7">
@@ -12,6 +14,12 @@ export function PageShell({ title, description, children }) {
   );
 }
 
+PageShell.propTypes = {
+  title: PropTypes.node.isRequired,
+  description: PropTypes.node,
+  children: PropTypes.node,
+};
+
 export function Panel({ title, children, actions }) {
   return (
     <section className="rounded-sm border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70">
@@ -24,6 +32,12 @@ export function Panel({ title, children, actions }) {
   );
 }
 
+Panel.propTypes = {
+  title: PropTypes.node,
+  children: PropTypes.node,
+  actions: PropTypes.node,
+};
+
 export function Field({ label, children }) {
   return (
     <label className="block">
@@ -32,6 +46,11 @@ export function Field({ label, children }) {
     </label>
   );
 }
+
+Field.propTypes = {
+  label: PropTypes.node.isRequired,
+  children: PropTypes.node,
+};
 
 export function ResultBox({ result, error }) {
   if (!result && !error) return null;
@@ -46,6 +65,11 @@ export function ResultBox({ result, error }) {
     </div>
   );
 }
+
+ResultBox.propTypes = {
+  result: PropTypes.oneOfType([PropTypes.object, PropTypes.array, PropTypes.string]),
+  error: PropTypes.string,
+};
 
 export const inputClass = 'w-full rounded-sm border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-banker-blue focus:ring-2 focus:ring-banker-blue/15';
 export const primaryButtonClass = 'rounded-sm bg-banker-blue px-5 py-2.5 text-sm font-black text-white transition hover:bg-banker-navy disabled:cursor-not-allowed disabled:bg-slate-400';

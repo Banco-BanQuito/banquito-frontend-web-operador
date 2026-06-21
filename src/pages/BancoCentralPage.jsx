@@ -53,6 +53,13 @@ export const BancoCentralPage = () => {
 
   const todayConsolidated = consolidatedFiles.find((f) => (f.periodFrom || '').slice(0, 10) === todayKey());
 
+  let consolidateButtonLabel = 'Generar consolidado de hoy';
+  if (consolidating) {
+    consolidateButtonLabel = 'Generando...';
+  } else if (todayConsolidated) {
+    consolidateButtonLabel = 'Actualizar consolidado de hoy';
+  }
+
   const handleConsolidate = async () => {
     setConsolidating(true);
     setNotice('');
@@ -108,7 +115,7 @@ export const BancoCentralPage = () => {
             title={todayConsolidated ? 'Vuelve a generarlo para incluir los movimientos mas recientes del dia' : ''}
             className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-indigo-300"
           >
-            {consolidating ? 'Generando...' : todayConsolidated ? 'Actualizar consolidado de hoy' : 'Generar consolidado de hoy'}
+            {consolidateButtonLabel}
           </button>
         </div>
 

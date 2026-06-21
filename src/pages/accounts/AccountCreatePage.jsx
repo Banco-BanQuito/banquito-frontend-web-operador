@@ -226,15 +226,15 @@ export const AccountCreatePage = () => {
     } catch (err) {
       let errorMessage = 'Error al crear cuenta';
 
-      if (err.response?.status === 400) {
+      if (!err.response) {
+        errorMessage = 'No se puede conectar al servidor';
+      } else if (err.response.status === 400) {
         errorMessage =
           err.response?.data?.message || 'Los datos ingresados no son válidos';
-      } else if (err.response?.status === 404) {
+      } else if (err.response.status === 404) {
         errorMessage = 'Cliente o sucursal no encontrado';
-      } else if (err.response?.status === 500) {
+      } else if (err.response.status === 500) {
         errorMessage = 'Error en el servidor. Intente más tarde';
-      } else if (!err.response) {
-        errorMessage = 'No se puede conectar al servidor';
       } else {
         errorMessage = err.response?.data?.message || errorMessage;
       }

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { searchCustomer } from '../../api/customerApi';
 import { inputClass } from '../PageShell';
 
@@ -298,3 +299,11 @@ export function CustomerSelector({ value, onChange, error }) {
     </div>
   );
 }
+
+CustomerSelector.propTypes = {
+  value: PropTypes.shape({
+    name: PropTypes.string,
+  }),
+  onChange: PropTypes.func.isRequired,
+  error: PropTypes.string,
+};

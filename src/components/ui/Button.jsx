@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export function Button({
   children,
   variant = 'primary',
@@ -34,3 +36,11 @@ export function Button({
     </button>
   );
 }
+
+Button.propTypes = {
+  children: PropTypes.node,
+  variant: PropTypes.oneOf(['primary', 'secondary', 'danger', 'success', 'outline']),
+  size: PropTypes.oneOf(['sm', 'md', 'lg']),
+  disabled: PropTypes.bool,
+  className: PropTypes.string,
+};

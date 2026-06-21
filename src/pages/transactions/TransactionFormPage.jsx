@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { debit, credit, transfer } from '../../api/transactionApi';
 import { getAccount } from '../../api/accountApi';
@@ -61,6 +62,11 @@ const Label = ({ children, required }) => (
   </label>
 );
 
+Label.propTypes = {
+  children: PropTypes.node,
+  required: PropTypes.bool,
+};
+
 const AccountFeedback = ({ info, requireActive = false }) => {
   if (info.checking) {
     return (
@@ -103,6 +109,17 @@ const AccountFeedback = ({ info, requireActive = false }) => {
       <OkIcon /> Titular: {info.holder}
     </p>
   );
+};
+
+AccountFeedback.propTypes = {
+  info: PropTypes.shape({
+    checking: PropTypes.bool,
+    found: PropTypes.bool,
+    holder: PropTypes.string,
+    status: PropTypes.string,
+    error: PropTypes.string,
+  }).isRequired,
+  requireActive: PropTypes.bool,
 };
 
 export const TransactionFormPage = () => {

@@ -3,6 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { searchCustomer } from '../../api/customerApi';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 
+function formatCustomerTypeLabel(result) {
+  if (result.customerType === 'NATURAL' || result.type === 'NATURAL') return 'Persona Natural';
+  if (result.customerType === 'JURIDICO' || result.type === 'JURIDICO') return 'Persona Jurídica';
+  return result.customerType || result.type;
+}
+
 export const CustomerSearchPage = () => {
   const [identificationType, setIdentificationType] = useState('CEDULA');
   const [identificationNumber, setIdentificationNumber] = useState('');
@@ -28,14 +34,14 @@ export const CustomerSearchPage = () => {
     } catch (err) {
       let errorMessage = 'Error al buscar cliente';
 
-      if (err.response?.status === 404) {
-        errorMessage = `No se encontró cliente con ${identificationType.toLowerCase()}: ${identificationNumber}`;
-      } else if (err.response?.status === 400) {
-        errorMessage = err.response?.data?.message || 'Datos inválidos. Verifique el número de identificación';
-      } else if (err.response?.status === 500) {
-        errorMessage = 'Error en el servidor. Intente más tarde';
-      } else if (!err.response) {
+      if (!err.response) {
         errorMessage = 'No se puede conectar al servidor';
+      } else if (err.response.status === 404) {
+        errorMessage = `No se encontró cliente con ${identificationType.toLowerCase()}: ${identificationNumber}`;
+      } else if (err.response.status === 400) {
+        errorMessage = err.response?.data?.message || 'Datos inválidos. Verifique el número de identificación';
+      } else if (err.response.status === 500) {
+        errorMessage = 'Error en el servidor. Intente más tarde';
       } else {
         errorMessage = err.response?.data?.message || errorMessage;
       }
@@ -147,9 +153,7 @@ export const CustomerSearchPage = () => {
                 <div>
                   <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Tipo de Cliente</p>
                   <p className="text-sm font-semibold text-slate-800 mt-0.5">
-                    {searchResult.customerType === 'NATURAL' || searchResult.type === 'NATURAL' ? 'Persona Natural' :
-                     searchResult.customerType === 'JURIDICO' || searchResult.type === 'JURIDICO' ? 'Persona Jurídica' :
-                     searchResult.customerType || searchResult.type}
+                    {formatCustomerTypeLabel(searchResult)}
                   </p>
                 </div>
                 <div>

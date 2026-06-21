@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export function DataTable({ columns, data, loading = false }) {
   if (loading) {
     return (
@@ -40,3 +42,13 @@ export function DataTable({ columns, data, loading = false }) {
     </div>
   );
 }
+
+DataTable.propTypes = {
+  columns: PropTypes.arrayOf(PropTypes.shape({
+    key: PropTypes.string.isRequired,
+    label: PropTypes.node,
+    render: PropTypes.func,
+  })).isRequired,
+  data: PropTypes.arrayOf(PropTypes.object),
+  loading: PropTypes.bool,
+};

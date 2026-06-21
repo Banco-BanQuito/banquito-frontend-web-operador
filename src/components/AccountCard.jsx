@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export function AccountCard({ account }) {
   const getStatusBadge = (status) => {
     const statusConfig = {
@@ -77,3 +79,16 @@ export function AccountCard({ account }) {
     </div>
   );
 }
+
+AccountCard.propTypes = {
+  account: PropTypes.shape({
+    status: PropTypes.string,
+    accountNumber: PropTypes.string,
+    accountSubtypeDescription: PropTypes.string,
+    branchName: PropTypes.string,
+    accountingBalance: PropTypes.number,
+    availableBalance: PropTypes.number,
+    openingDate: PropTypes.string,
+    isFavorite: PropTypes.bool,
+  }).isRequired,
+};

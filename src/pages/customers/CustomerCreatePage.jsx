@@ -1,54 +1,98 @@
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useNavigate, useBlocker } from 'react-router-dom';
 import { createCustomer, getCustomerSubtypesByType } from '../../api/customerApi';
 import { validateEmail, validatePhone, validateIdentification, validateRuc } from '../../helpers/validators';
 import ConfirmModal from '../../components/ui/ConfirmModal';
 import RepresentativeSearchModal from '../../components/customers/RepresentativeSearchModal';
 
-const validateField = (name, value, idType) => {
-  switch (name) {
-    case 'identificationNumber':
-      if (!value) return 'Requerido';
-      if (idType === 'RUC' && !validateRuc(value)) {
-        return 'Para persona jurídica el RUC debe tener 13 dígitos';
-      }
-      if (!validateIdentification(idType, value)) {
-        if (idType === 'RUC') return 'Para persona jurídica el RUC debe tener 13 dígitos';
-        return 'Número inválido para el tipo seleccionado';
-      }
-      return '';
-    case 'email':
-      if (!value) return 'Requerido';
-      if (!validateEmail(value)) return 'Formato de email inválido';
-      return '';
-    case 'phone':
-      if (!value) return 'Requerido';
-      if (!validatePhone(value)) return 'Formato: 09XXXXXXXX o +593XXXXXXXXX';
-      return '';
-    case 'address':
-      if (!value || value.trim().length < 5) return 'Ingrese una dirección válida (mínimo 5 caracteres)';
-      return '';
-    case 'firstName':
-    case 'lastName':
-      if (!value || value.trim().length < 2) return 'Requerido (mínimo 2 caracteres)';
-      return '';
-    case 'birthDate':
-      if (!value) return 'Requerida';
-      if (new Date(value) >= new Date()) return 'La fecha de nacimiento no puede ser futura';
-      return '';
-    case 'businessName':
-      if (!value || value.trim().length < 3) return 'Razón social requerida (mínimo 3 caracteres)';
-      return '';
-    case 'incorporationDate':
-      if (!value) return 'Requerida';
-      if (new Date(value) > new Date()) return 'La fecha de constitución no puede ser futura';
-      return '';
-    default:
-      return '';
+const validateIdentificationNumberField = (value, idType) => {
+  if (!value) return 'Requerido';
+  if (idType === 'RUC' && !validateRuc(value)) {
+    return 'Para persona jurídica el RUC debe tener 13 dígitos';
   }
+  if (!validateIdentification(idType, value)) {
+    if (idType === 'RUC') return 'Para persona jurídica el RUC debe tener 13 dígitos';
+    return 'Número inválido para el tipo seleccionado';
+  }
+  return '';
+};
+
+const validateEmailField = (value) => {
+  if (!value) return 'Requerido';
+  if (!validateEmail(value)) return 'Formato de email inválido';
+  return '';
+};
+
+const validatePhoneField = (value) => {
+  if (!value) return 'Requerido';
+  if (!validatePhone(value)) return 'Formato: 09XXXXXXXX o +593XXXXXXXXX';
+  return '';
+};
+
+const validateAddressField = (value) => {
+  if (!value || value.trim().length < 5) return 'Ingrese una dirección válida (mínimo 5 caracteres)';
+  return '';
+};
+
+const validateNameField = (value) => {
+  if (!value || value.trim().length < 2) return 'Requerido (mínimo 2 caracteres)';
+  return '';
+};
+
+const validateBirthDateField = (value) => {
+  if (!value) return 'Requerida';
+  if (new Date(value) >= new Date()) return 'La fecha de nacimiento no puede ser futura';
+  return '';
+};
+
+const validateBusinessNameField = (value) => {
+  if (!value || value.trim().length < 3) return 'Razón social requerida (mínimo 3 caracteres)';
+  return '';
+};
+
+const validateIncorporationDateField = (value) => {
+  if (!value) return 'Requerida';
+  if (new Date(value) > new Date()) return 'La fecha de constitución no puede ser futura';
+  return '';
+};
+
+const FIELD_VALIDATORS = {
+  identificationNumber: (value, idType) => validateIdentificationNumberField(value, idType),
+  email: (value) => validateEmailField(value),
+  phone: (value) => validatePhoneField(value),
+  address: (value) => validateAddressField(value),
+  firstName: (value) => validateNameField(value),
+  lastName: (value) => validateNameField(value),
+  birthDate: (value) => validateBirthDateField(value),
+  businessName: (value) => validateBusinessNameField(value),
+  incorporationDate: (value) => validateIncorporationDateField(value),
+};
+
+const validateField = (name, value, idType) => {
+  const validator = FIELD_VALIDATORS[name];
+  return validator ? validator(value, idType) : '';
 };
 
 const today = new Date().toISOString().split('T')[0];
+
+const FieldError = ({ name, fieldErrors, touched }) =>
+  fieldErrors[name] && touched[name] ? (
+    <p className="text-xs text-red-600 mt-1 flex items-center gap-1">
+      <svg className="w-3 h-3 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+      </svg>
+      {fieldErrors[name]}
+    </p>
+  ) : null;
+
+FieldError.propTypes = {
+  name: PropTypes.string.isRequired,
+  fieldErrors: PropTypes.objectOf(PropTypes.string).isRequired,
+  touched: PropTypes.objectOf(PropTypes.bool).isRequired,
+};
+
+const Required = () => <span className="text-red-500 ml-0.5">*</span>;
 
 export const CustomerCreatePage = () => {
   const navigate = useNavigate();
@@ -217,14 +261,14 @@ export const CustomerCreatePage = () => {
       setTimeout(() => navigate(`/clientes/${response.data.id}`), 1500);
     } catch (err) {
       let msg = 'Error al crear cliente';
-      if (err.response?.status === 400) {
-        msg = err.response?.data?.message || 'Datos inválidos. Verifique que la identificación sea única';
-      } else if (err.response?.status === 409) {
-        msg = 'Este cliente ya existe en el sistema';
-      } else if (err.response?.status === 500) {
-        msg = 'Error en el servidor. Intente más tarde';
-      } else if (!err.response) {
+      if (!err.response) {
         msg = 'No se puede conectar al servidor';
+      } else if (err.response.status === 400) {
+        msg = err.response?.data?.message || 'Datos inválidos. Verifique que la identificación sea única';
+      } else if (err.response.status === 409) {
+        msg = 'Este cliente ya existe en el sistema';
+      } else if (err.response.status === 500) {
+        msg = 'Error en el servidor. Intente más tarde';
       } else {
         msg = err.response?.data?.message || msg;
       }
@@ -239,18 +283,6 @@ export const CustomerCreatePage = () => {
     `w-full px-3 py-2.5 border rounded-lg text-sm text-slate-800 placeholder-slate-400 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
       fieldErrors[name] && touched[name] ? 'border-red-400 bg-red-50' : 'border-slate-300'
     }`;
-
-  const FieldError = ({ name }) =>
-    fieldErrors[name] && touched[name] ? (
-      <p className="text-xs text-red-600 mt-1 flex items-center gap-1">
-        <svg className="w-3 h-3 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-        </svg>
-        {fieldErrors[name]}
-      </p>
-    ) : null;
-
-  const Required = () => <span className="text-red-500 ml-0.5">*</span>;
 
   return (
     <>
@@ -412,7 +444,7 @@ export const CustomerCreatePage = () => {
                   placeholder="Ingrese la identificacion"
                   className={inputCls('identificationNumber')}
                 />
-                <FieldError name="identificationNumber" />
+                <FieldError name="identificationNumber" fieldErrors={fieldErrors} touched={touched} />
               </div>
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-1.5">
@@ -427,7 +459,7 @@ export const CustomerCreatePage = () => {
                   placeholder="Ingrese el correo electronico"
                   className={inputCls('email')}
                 />
-                <FieldError name="email" />
+                <FieldError name="email" fieldErrors={fieldErrors} touched={touched} />
               </div>
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-1.5">
@@ -442,7 +474,7 @@ export const CustomerCreatePage = () => {
                   placeholder="09XXXXXXXX"
                   className={inputCls('phone')}
                 />
-                <FieldError name="phone" />
+                <FieldError name="phone" fieldErrors={fieldErrors} touched={touched} />
               </div>
               <div className="md:col-span-2">
                 <label className="block text-sm font-semibold text-slate-700 mb-1.5">
@@ -457,7 +489,7 @@ export const CustomerCreatePage = () => {
                   placeholder="Ingrese la direccion"
                   className={inputCls('address')}
                 />
-                <FieldError name="address" />
+                <FieldError name="address" fieldErrors={fieldErrors} touched={touched} />
               </div>
             </div>
           </div>
@@ -479,7 +511,7 @@ export const CustomerCreatePage = () => {
                     placeholder="Nombre(s)"
                     className={inputCls('firstName')}
                   />
-                  <FieldError name="firstName" />
+                  <FieldError name="firstName" fieldErrors={fieldErrors} touched={touched} />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-1.5">
@@ -494,7 +526,7 @@ export const CustomerCreatePage = () => {
                     placeholder="Apellido(s)"
                     className={inputCls('lastName')}
                   />
-                  <FieldError name="lastName" />
+                  <FieldError name="lastName" fieldErrors={fieldErrors} touched={touched} />
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-sm font-semibold text-slate-700 mb-1.5">
@@ -509,7 +541,7 @@ export const CustomerCreatePage = () => {
                     max={today}
                     className={inputCls('birthDate')}
                   />
-                  <FieldError name="birthDate" />
+                  <FieldError name="birthDate" fieldErrors={fieldErrors} touched={touched} />
                 </div>
               </div>
             </div>
@@ -532,7 +564,7 @@ export const CustomerCreatePage = () => {
                     placeholder="Nombre legal completo de la empresa"
                     className={inputCls('businessName')}
                   />
-                  <FieldError name="businessName" />
+                  <FieldError name="businessName" fieldErrors={fieldErrors} touched={touched} />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-1.5">
@@ -547,7 +579,7 @@ export const CustomerCreatePage = () => {
                     max={today}
                     className={inputCls('incorporationDate')}
                   />
-                  <FieldError name="incorporationDate" />
+                  <FieldError name="incorporationDate" fieldErrors={fieldErrors} touched={touched} />
                 </div>
               </div>
 
@@ -572,18 +604,7 @@ export const CustomerCreatePage = () => {
                   )}
                 </div>
 
-                {!selectedRepresentative ? (
-                  <button
-                    type="button"
-                    onClick={() => setShowRepModal(true)}
-                    className="w-full flex items-center justify-center gap-2 py-4 px-4 border-2 border-dashed border-slate-300 rounded-xl text-sm font-semibold text-slate-500 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    Buscar Representante Legal
-                  </button>
-                ) : (
+                {selectedRepresentative ? (
                   <div className="flex items-center gap-4 p-4 bg-green-50 border border-green-200 rounded-xl">
                     <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center shrink-0">
                       <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -596,13 +617,24 @@ export const CustomerCreatePage = () => {
                         {selectedRepresentative.identificationType} · {selectedRepresentative.identification}
                       </p>
                       <p className="text-xs text-green-700 font-semibold mt-1">
-                        {selectedRepresentative.accounts?.length ?? 0} cuenta{(selectedRepresentative.accounts?.length ?? 0) !== 1 ? 's' : ''} activa{(selectedRepresentative.accounts?.length ?? 0) !== 1 ? 's' : ''}
+                        {selectedRepresentative.accounts?.length ?? 0} cuenta{(selectedRepresentative.accounts?.length ?? 0) === 1 ? '' : 's'} activa{(selectedRepresentative.accounts?.length ?? 0) === 1 ? '' : 's'}
                       </p>
                     </div>
                     <svg className="w-5 h-5 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setShowRepModal(true)}
+                    className="w-full flex items-center justify-center gap-2 py-4 px-4 border-2 border-dashed border-slate-300 rounded-xl text-sm font-semibold text-slate-500 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    Buscar Representante Legal
+                  </button>
                 )}
               </div>
             </div>

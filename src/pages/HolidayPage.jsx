@@ -25,6 +25,55 @@ export const HolidayManagement = () => {
     }
   };
 
+  let holidaysContent;
+  if (loading) {
+    holidaysContent = (
+      <div className="p-12 flex justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-700"></div>
+      </div>
+    );
+  } else if (holidays.length === 0) {
+    holidaysContent = (
+      <div className="p-12 text-center">
+        <Calendar size={48} className="mx-auto text-slate-300 mb-4" />
+        <p className="text-slate-500">No hay feriados registrados en la nube (MySQL).</p>
+      </div>
+    );
+  } else {
+    holidaysContent = (
+      <table className="w-full text-left border-collapse">
+        <thead>
+          <tr className="bg-slate-50 border-b border-slate-200">
+            <th className="px-6 py-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Fecha</th>
+            <th className="px-6 py-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Nombre</th>
+            <th className="px-6 py-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Tipo</th>
+            <th className="px-6 py-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Acciones</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-slate-100">
+          {holidays.map((holiday) => (
+            <tr key={holiday.id} className="hover:bg-slate-50 transition-colors">
+              <td className="px-6 py-4 text-sm text-slate-800 font-medium">
+                {new Date(holiday.holidayDate).toLocaleDateString()}
+              </td>
+              <td className="px-6 py-4 text-sm text-slate-600">{holiday.name}</td>
+              <td className="px-6 py-4">
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
+                  NACIONAL
+                </span>
+              </td>
+              <td className="px-6 py-4">
+                <button className="text-red-500 hover:text-red-700 transition-colors">
+                  <Trash2 size={18} />
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -48,47 +97,7 @@ export const HolidayManagement = () => {
       )}
 
       <div className="bg-white rounded-xl shadow-md border border-slate-100 overflow-hidden">
-        {loading ? (
-          <div className="p-12 flex justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-700"></div>
-          </div>
-        ) : holidays.length === 0 ? (
-          <div className="p-12 text-center">
-            <Calendar size={48} className="mx-auto text-slate-300 mb-4" />
-            <p className="text-slate-500">No hay feriados registrados en la nube (MySQL).</p>
-          </div>
-        ) : (
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-200">
-                <th className="px-6 py-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Fecha</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Nombre</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Tipo</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Acciones</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {holidays.map((holiday) => (
-                <tr key={holiday.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-6 py-4 text-sm text-slate-800 font-medium">
-                    {new Date(holiday.holidayDate).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-slate-600">{holiday.name}</td>
-                  <td className="px-6 py-4">
-                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
-                      NACIONAL
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <button className="text-red-500 hover:text-red-700 transition-colors">
-                      <Trash2 size={18} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+        {holidaysContent}
       </div>
     </div>
   );

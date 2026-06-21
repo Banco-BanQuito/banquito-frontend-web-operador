@@ -1,3 +1,12 @@
+import PropTypes from 'prop-types';
+
+const sharedFieldPropTypes = {
+  label: PropTypes.node,
+  error: PropTypes.node,
+  required: PropTypes.bool,
+  helperText: PropTypes.node,
+};
+
 export function FormField({
   label,
   error,
@@ -25,6 +34,12 @@ export function FormField({
   );
 }
 
+FormField.propTypes = {
+  ...sharedFieldPropTypes,
+  children: PropTypes.node,
+  className: PropTypes.string,
+};
+
 export function Input({
   label,
   error,
@@ -38,6 +53,8 @@ export function Input({
     </FormField>
   );
 }
+
+Input.propTypes = sharedFieldPropTypes;
 
 export function Select({
   label,
@@ -61,6 +78,14 @@ export function Select({
   );
 }
 
+Select.propTypes = {
+  ...sharedFieldPropTypes,
+  options: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    label: PropTypes.node,
+  })),
+};
+
 export function Textarea({
   label,
   error,
@@ -74,3 +99,5 @@ export function Textarea({
     </FormField>
   );
 }
+
+Textarea.propTypes = sharedFieldPropTypes;

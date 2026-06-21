@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { STATUS_COLORS } from '../../constants/statusColors';
 import { formatStatus } from '../../helpers/formatters';
 
@@ -9,6 +10,10 @@ const StatusBadge = ({ status }) => {
       {formatStatus(status)}
     </span>
   );
+};
+
+StatusBadge.propTypes = {
+  status: PropTypes.string,
 };
 
 export default StatusBadge;

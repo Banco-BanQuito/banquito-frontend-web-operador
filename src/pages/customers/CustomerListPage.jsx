@@ -29,10 +29,10 @@ export const CustomerListPage = () => {
       const response = await searchCustomer(idType, identification.trim());
       setCustomer(response.data || null);
     } catch (err) {
-      if (err.response?.status === 404) {
-        setError('No se encontró ningún cliente con esa identificación.');
-      } else if (!err.response) {
+      if (!err.response) {
         setError('No se puede conectar al servidor.');
+      } else if (err.response.status === 404) {
+        setError('No se encontró ningún cliente con esa identificación.');
       } else {
         setError(err.response?.data?.message || 'Error al buscar el cliente.');
       }

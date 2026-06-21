@@ -31,12 +31,12 @@ export const TransactionHistoryPage = () => {
     } catch (err) {
       let errorMessage = 'Error al cargar transacciones';
 
-      if (err.response?.status === 404) {
-        errorMessage = `No se encontraron transacciones para la cuenta: ${account}`;
-      } else if (err.response?.status === 400) {
-        errorMessage = 'Número de cuenta inválido';
-      } else if (!err.response) {
+      if (!err.response) {
         errorMessage = 'No se puede conectar al servidor';
+      } else if (err.response.status === 404) {
+        errorMessage = `No se encontraron transacciones para la cuenta: ${account}`;
+      } else if (err.response.status === 400) {
+        errorMessage = 'Número de cuenta inválido';
       } else {
         errorMessage = err.response?.data?.message || errorMessage;
       }

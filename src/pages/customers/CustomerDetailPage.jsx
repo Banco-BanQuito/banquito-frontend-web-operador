@@ -8,6 +8,18 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import ConfirmModal from '../../components/ui/ConfirmModal';
 import BackButton from '../../components/ui/BackButton';
 
+function formatCustomerTypeLabel(customer) {
+  if (customer.customerType === 'NATURAL' || customer.type === 'NATURAL') return 'Persona Natural';
+  if (customer.customerType === 'JURIDICO' || customer.type === 'JURIDICO') return 'Persona Jurídica';
+  return customer.customerType || customer.type;
+}
+
+function accountsUpdateResultClass(result) {
+  if (result.type === 'info') return 'bg-blue-50 text-blue-800';
+  if (result.type === 'success') return 'bg-green-50 text-green-800';
+  return 'bg-yellow-50 text-yellow-800';
+}
+
 export const CustomerDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -145,9 +157,7 @@ export const CustomerDetailPage = () => {
               <div>
                 <p className="text-gray-600 text-sm">Tipo de Cliente</p>
                 <p className="font-semibold">
-                  {customer.customerType === 'NATURAL' || customer.type === 'NATURAL' ? 'Persona Natural' :
-                   customer.customerType === 'JURIDICO' || customer.type === 'JURIDICO' ? 'Persona Jurídica' :
-                   customer.customerType || customer.type}
+                  {formatCustomerTypeLabel(customer)}
                 </p>
               </div>
               <div>
@@ -191,20 +201,14 @@ export const CustomerDetailPage = () => {
             )}
             {accountsUpdateResult && (
               <div
-                className={`p-3 rounded mb-4 text-sm ${
-                  accountsUpdateResult.type === 'info'
-                    ? 'bg-blue-50 text-blue-800'
-                    : accountsUpdateResult.type === 'success'
-                    ? 'bg-green-50 text-green-800'
-                    : 'bg-yellow-50 text-yellow-800'
-                }`}
+                className={`p-3 rounded mb-4 text-sm ${accountsUpdateResultClass(accountsUpdateResult)}`}
               >
                 {accountsUpdateResult.type === 'info' ? (
                   accountsUpdateResult.message
                 ) : (
                   <>
                     <p className="font-semibold mb-1">
-                      Se actualizaron {accountsUpdateResult.updated} cuenta{accountsUpdateResult.updated !== 1 ? 's' : ''} correctamente,&nbsp;
+                      Se actualizaron {accountsUpdateResult.updated} cuenta{accountsUpdateResult.updated === 1 ? '' : 's'} correctamente,&nbsp;
                       {accountsUpdateResult.failed.length} fallaron.
                     </p>
                     {accountsUpdateResult.failed.length > 0 && (
@@ -275,7 +279,7 @@ export const CustomerDetailPage = () => {
                         <td className="p-3 font-semibold">{account.accountNumber || '—'}</td>
                         <td className="p-3">{account.accountSubtypeName || '—'}</td>
                         <td className="p-3">{account.branchName || '—'}</td>
-                        <td className="p-3">{account.availableBalance != null ? formatCurrency(account.availableBalance) : '—'}</td>
+                        <td className="p-3">{account.availableBalance == null ? '—' : formatCurrency(account.availableBalance)}</td>
                         <td className="p-3">
                           <StatusBadge status={account.status} />
                         </td>

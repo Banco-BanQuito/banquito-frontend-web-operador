@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export function Alert({ type = 'info', title, message, children, dismissible = false, onDismiss }) {
   const icons = {
     info: '🛈',
@@ -26,3 +28,12 @@ export function Alert({ type = 'info', title, message, children, dismissible = f
     </div>
   );
 }
+
+Alert.propTypes = {
+  type: PropTypes.oneOf(['info', 'success', 'warning', 'danger']),
+  title: PropTypes.node,
+  message: PropTypes.node,
+  children: PropTypes.node,
+  dismissible: PropTypes.bool,
+  onDismiss: PropTypes.func,
+};

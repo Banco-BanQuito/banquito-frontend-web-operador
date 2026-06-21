@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export function Card({ children, className = '', ...props }) {
   return (
     <div
@@ -9,6 +11,11 @@ export function Card({ children, className = '', ...props }) {
   );
 }
 
+Card.propTypes = {
+  children: PropTypes.node,
+  className: PropTypes.string,
+};
+
 export function CardHeader({ children, className = '' }) {
   return (
     <div className={`mb-6 ${className}`}>
@@ -16,6 +23,11 @@ export function CardHeader({ children, className = '' }) {
     </div>
   );
 }
+
+CardHeader.propTypes = {
+  children: PropTypes.node,
+  className: PropTypes.string,
+};
 
 export function CardTitle({ children, className = '' }) {
   return (
@@ -25,6 +37,11 @@ export function CardTitle({ children, className = '' }) {
   );
 }
 
+CardTitle.propTypes = {
+  children: PropTypes.node,
+  className: PropTypes.string,
+};
+
 export function CardContent({ children, className = '' }) {
   return (
     <div className={`space-y-4 ${className}`}>
@@ -32,3 +49,8 @@ export function CardContent({ children, className = '' }) {
     </div>
   );
 }
+
+CardContent.propTypes = {
+  children: PropTypes.node,
+  className: PropTypes.string,
+};

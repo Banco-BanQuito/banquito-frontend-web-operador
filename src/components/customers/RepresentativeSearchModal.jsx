@@ -1,6 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { searchCustomer } from '../../api/customerApi';
 import { getAccountsByCustomer } from '../../api/accountApi';
+
+function buildSearchErrorMessage(err, type, trimmedQuery) {
+  if (!err.response) return 'No se puede conectar al servidor';
+  if (err.response.status === 404) return `No se encontró cliente con ${type.toLowerCase()}: ${trimmedQuery}`;
+  return err.response?.data?.message || 'Error al buscar representante';
+}
 
 const RepresentativeSearchModal = ({ isOpen, onClose, onSelect }) => {
   const [searchType, setSearchType] = useState('CEDULA');
@@ -61,13 +68,7 @@ const RepresentativeSearchModal = ({ isOpen, onClose, onSelect }) => {
       setSearched(true);
     } catch (err) {
       if (searchRequestRef.current !== requestId) return;
-      if (err.response?.status === 404) {
-        setError(`No se encontró cliente con ${type.toLowerCase()}: ${trimmedQuery}`);
-      } else if (!err.response) {
-        setError('No se puede conectar al servidor');
-      } else {
-        setError(err.response?.data?.message || 'Error al buscar representante');
-      }
+      setError(buildSearchErrorMessage(err, type, trimmedQuery));
       setSearched(true);
     } finally {
       if (searchRequestRef.current === requestId) {
@@ -226,7 +227,7 @@ const RepresentativeSearchModal = ({ isOpen, onClose, onSelect }) => {
                         {result.identificationType} · {result.identification}
                       </p>
                       <span className="inline-block mt-1.5 text-xs font-semibold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">
-                        {result.accounts.length} cuenta{result.accounts.length !== 1 ? 's' : ''} activa{result.accounts.length !== 1 ? 's' : ''}
+                        {result.accounts.length} cuenta{result.accounts.length === 1 ? '' : 's'} activa{result.accounts.length === 1 ? '' : 's'}
                       </span>
                     </div>
                   </div>
@@ -255,6 +256,12 @@ const RepresentativeSearchModal = ({ isOpen, onClose, onSelect }) => {
       </div>
     </>
   );
+};
+
+RepresentativeSearchModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
 };
 
 export default RepresentativeSearchModal;

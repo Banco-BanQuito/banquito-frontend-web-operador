@@ -173,9 +173,9 @@ export const AccountCreatePage = () => {
       return false;
     }
 
-    const accountSubtypeId = parseInt(formData.accountSubtypeId);
+    const accountSubtypeId = Number.parseInt(formData.accountSubtypeId);
     const existingAccount = customerAccounts.find(
-      (acc) => parseInt(acc.accountSubtypeId) === accountSubtypeId,
+      (acc) => Number.parseInt(acc.accountSubtypeId) === accountSubtypeId,
     );
     if (existingAccount) {
       setError(
@@ -189,8 +189,8 @@ export const AccountCreatePage = () => {
       return false;
     }
 
-    const amount = parseFloat(formData.initialBalance);
-    if (isNaN(amount) || !validateCurrency(formData.initialBalance)) {
+    const amount = Number.parseFloat(formData.initialBalance);
+    if (Number.isNaN(amount) || !validateCurrency(formData.initialBalance)) {
       setError('Saldo inicial inválido');
       return false;
     }
@@ -213,11 +213,11 @@ export const AccountCreatePage = () => {
     setSubmitting(true);
     try {
       const payload = {
-        customerId: parseInt(formData.customerId),
-        accountSubtypeId: parseInt(formData.accountSubtypeId),
-        branchId: parseInt(formData.branchId),
+        customerId: Number.parseInt(formData.customerId),
+        accountSubtypeId: Number.parseInt(formData.accountSubtypeId),
+        branchId: Number.parseInt(formData.branchId),
         initialDeposit: formData.initialBalance
-          ? parseFloat(formData.initialBalance)
+          ? Number.parseFloat(formData.initialBalance)
           : 0,
       };
 
@@ -365,10 +365,11 @@ export const AccountCreatePage = () => {
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">
+            <label htmlFor="account-subtype" className="block text-sm font-medium mb-2">
               Tipo de Cuenta *
             </label>
             <select
+              id="account-subtype"
               name="accountSubtypeId"
               value={formData.accountSubtypeId}
               onChange={handleInputChange}
@@ -385,8 +386,9 @@ export const AccountCreatePage = () => {
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">Moneda</label>
+            <label htmlFor="account-currency" className="block text-sm font-medium mb-2">Moneda</label>
             <input
+              id="account-currency"
               type="text"
               value="USD"
               readOnly
@@ -395,8 +397,9 @@ export const AccountCreatePage = () => {
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">Sucursal *</label>
+            <label htmlFor="account-branch" className="block text-sm font-medium mb-2">Sucursal *</label>
             <select
+              id="account-branch"
               name="branchId"
               value={formData.branchId}
               onChange={handleInputChange}
@@ -416,10 +419,11 @@ export const AccountCreatePage = () => {
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">
+            <label htmlFor="initial-balance" className="block text-sm font-medium mb-2">
               Saldo Inicial *
             </label>
             <input
+              id="initial-balance"
               type="number"
               name="initialBalance"
               value={formData.initialBalance}

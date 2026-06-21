@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getAccount, activateAccount, inactivateAccount, blockAccount, suspendAccount } from '../../api/accountApi';
-import { formatCurrency, formatDate, formatDateTime, formatStatus } from '../../helpers/formatters';
+import { formatCurrency, formatDateTime } from '../../helpers/formatters';
 import StatusBadge from '../../components/ui/StatusBadge';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import ConfirmModal from '../../components/ui/ConfirmModal';
@@ -178,9 +178,10 @@ export const AccountDetailPage = () => {
               <h2 className="text-2xl font-bold">Últimas Transacciones</h2>
             </div>
 
-            {historyError ? (
+            {historyError && (
               <p className="text-red-600 py-4 text-center">{historyError}</p>
-            ) : transactions.length > 0 ? (
+            )}
+            {!historyError && transactions.length > 0 && (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm">
                   <thead className="bg-gray-100 border-b">
@@ -213,7 +214,8 @@ export const AccountDetailPage = () => {
                   </tbody>
                 </table>
               </div>
-            ) : (
+            )}
+            {!historyError && transactions.length === 0 && (
               <p className="text-gray-600 py-4">No hay transacciones recientes</p>
             )}
           </div>

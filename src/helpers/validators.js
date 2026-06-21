@@ -4,7 +4,7 @@ export const validateEmail = (email) => {
 };
 
 export const validatePhone = (phone) => {
-  const phoneRegex = /^(\+593|0)[0-9]{9,10}$/;
+  const phoneRegex = /^(\+593|0)\d{9,10}$/;
   return phoneRegex.test(phone.replace(/\s|-/g, ''));
 };
 
@@ -14,8 +14,8 @@ export const validateRuc = (value) => {
 
 export const validateCurrency = (amount) => {
   if (!amount) return false;
-  const num = parseFloat(amount);
-  return !isNaN(num) && num >= 0 && num <= 999999999.99;
+  const num = Number.parseFloat(amount);
+  return !Number.isNaN(num) && num >= 0 && num <= 999999999.99;
 };
 
 export const validateIdentification = (type, number) => {
@@ -51,7 +51,7 @@ export const validateMaxLength = (value, max) => {
 
 export const validateDateFormat = (dateString) => {
   const date = new Date(dateString);
-  return date instanceof Date && !isNaN(date);
+  return date instanceof Date && !Number.isNaN(date);
 };
 
 export const validateFutureDate = (dateString) => {

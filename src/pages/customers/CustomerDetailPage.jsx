@@ -49,12 +49,6 @@ export const CustomerDetailPage = () => {
     fetchData();
   }, [id]);
 
-  const STATUS_LABELS = {
-    ACTIVO: 'Activar',
-    INACTIVO: 'Inactivar',
-    SUSPENDIDO: 'Suspender',
-  };
-
   const applyStatusToAccounts = async (newStatus) => {
     if (newStatus === 'ACTIVO' || accounts.length === 0) return null;
 
@@ -91,8 +85,10 @@ export const CustomerDetailPage = () => {
       try {
         const accountsResponse = await getAccountsByCustomer(id);
         setAccounts(accountsResponse.data || []);
-      } catch (_) {
-        // keep existing accounts list if reload fails
+      } catch (error) {
+        if (import.meta.env.DEV) {
+          console.debug('No se pudieron recargar las cuentas del cliente.', error);
+        }
       }
 
       if (newStatus === 'ACTIVO') {

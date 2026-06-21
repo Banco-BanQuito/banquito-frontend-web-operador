@@ -26,12 +26,16 @@ instance.interceptors.request.use((config) => {
           config.headers['X-Core-User-Id'] = String(maybeId);
           break;
         }
-      } catch (_) {
-        // ignore parse errors
+      } catch (error) {
+        if (import.meta.env.DEV) {
+          console.debug('Invalid auth session payload ignored.', error);
+        }
       }
     }
-  } catch (e) {
-    // ignore storage errors
+  } catch (error) {
+    if (import.meta.env.DEV) {
+      console.debug('Unable to inspect local auth session.', error);
+    }
   }
 
   if (import.meta.env.DEV && !config.headers['X-Core-User-Id']) {

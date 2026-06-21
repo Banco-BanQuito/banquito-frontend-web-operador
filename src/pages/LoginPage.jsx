@@ -84,8 +84,9 @@ export function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Usuario</label>
+              <label htmlFor="operator-username" className="block text-sm font-semibold text-slate-700 mb-2">Usuario</label>
               <input
+                id="operator-username"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -96,8 +97,9 @@ export function LoginPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Contraseña</label>
+              <label htmlFor="operator-password" className="block text-sm font-semibold text-slate-700 mb-2">Contraseña</label>
               <input
+                id="operator-password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

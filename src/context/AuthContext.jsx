@@ -74,8 +74,8 @@ export function AuthProvider({ children }) {
       logout();
     };
 
-    window.addEventListener('logout', handleLogout);
-    return () => window.removeEventListener('logout', handleLogout);
+    globalThis.addEventListener('logout', handleLogout);
+    return () => globalThis.removeEventListener('logout', handleLogout);
   }, [logout]);
 
   const contextValue = useMemo(() => ({

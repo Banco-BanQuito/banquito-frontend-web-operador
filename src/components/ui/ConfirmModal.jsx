@@ -31,16 +31,12 @@ const ConfirmModal = ({
         if (!focusable?.length) return;
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
-        if (e.shiftKey) {
-          if (document.activeElement === first) {
-            e.preventDefault();
-            last.focus();
-          }
-        } else {
-          if (document.activeElement === last) {
-            e.preventDefault();
-            first.focus();
-          }
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
         }
       }
     };
@@ -53,10 +49,9 @@ const ConfirmModal = ({
 
   return createPortal(
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" aria-hidden="true">
-      <div
+      <dialog
+        open
         ref={modalRef}
-        role="dialog"
-        aria-modal="true"
         aria-labelledby="confirm-modal-title"
         className="bg-white rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl"
       >
@@ -85,7 +80,7 @@ const ConfirmModal = ({
             {confirmText}
           </button>
         </div>
-      </div>
+      </dialog>
     </div>,
     document.body
   );

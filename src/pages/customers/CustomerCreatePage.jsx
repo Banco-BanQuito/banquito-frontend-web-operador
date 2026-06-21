@@ -346,10 +346,11 @@ export const CustomerCreatePage = () => {
             </div>
 
             <div className="mt-5 border-t border-slate-100 pt-5">
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+              <label htmlFor="customer-subtype" className="block text-sm font-semibold text-slate-700 mb-1.5">
                 Subtipo de Cliente<Required />
               </label>
               <select
+                id="customer-subtype"
                 value={subtypeId}
                 onChange={(e) => setSubtypeId(e.target.value)}
                 required
@@ -373,11 +374,11 @@ export const CustomerCreatePage = () => {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                <label htmlFor="customer-identification-type" className="block text-sm font-semibold text-slate-700 mb-1.5">
                   Tipo de Identificación
                 </label>
                 {customerType === 'JURIDICO' ? (
-                  <div className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm bg-slate-50 text-slate-600 flex items-center gap-2 cursor-not-allowed select-none">
+                  <div id="customer-identification-type" className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm bg-slate-50 text-slate-600 flex items-center gap-2 cursor-not-allowed select-none">
                     <svg className="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
@@ -386,6 +387,7 @@ export const CustomerCreatePage = () => {
                   </div>
                 ) : (
                   <select
+                    id="customer-identification-type"
                     name="identificationType"
                     value={formData.identificationType}
                     onChange={handleInputChange}

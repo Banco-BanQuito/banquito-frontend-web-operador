@@ -247,9 +247,8 @@ export function CustomerSelector({ value, onChange, error }) {
       </div>
 
       {!value && open && results.length > 0 && (
-        <ul
+        <div
           id="customer-selector-listbox"
-          role="listbox"
           aria-label="Resultados de clientes"
           className="absolute z-50 mt-1 w-full rounded-sm border border-slate-200 bg-white shadow-lg shadow-slate-200/60 overflow-hidden"
         >
@@ -259,12 +258,11 @@ export function CustomerSelector({ value, onChange, error }) {
             const type = buildType(customer);
             const isActive = index === activeIndex;
             return (
-              <li
+              <button
+                type="button"
                 key={customer.id}
                 id={`customer-option-${index}`}
-                role="option"
-                aria-selected={isActive}
-                className={`flex items-center justify-between gap-4 px-4 py-3 cursor-pointer text-sm transition-colors
+                className={`w-full flex items-center justify-between gap-4 px-4 py-3 cursor-pointer text-sm text-left transition-colors
                   ${isActive ? 'bg-banker-blue/5 text-banker-navy' : 'text-slate-700 hover:bg-slate-50'}`}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => handleSelect(customer)}
@@ -282,10 +280,10 @@ export function CustomerSelector({ value, onChange, error }) {
                     {type === 'JURIDICO' ? 'JURÍDICO' : type}
                   </span>
                 )}
-              </li>
+              </button>
             );
           })}
-        </ul>
+        </div>
       )}
 
       {!value && noResults && !loading && inputValue.trim() && (

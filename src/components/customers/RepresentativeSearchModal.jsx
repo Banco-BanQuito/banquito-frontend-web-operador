@@ -116,7 +116,9 @@ const RepresentativeSearchModal = ({ isOpen, onClose, onSelect }) => {
   return (
     <>
       {/* Backdrop — z-index 20, por debajo del sidebar (z-40) */}
-      <div
+      <button
+        type="button"
+        aria-label="Cerrar busqueda de representante"
         className="fixed inset-0 bg-slate-900/40"
         style={{ zIndex: 20 }}
         onClick={onClose}
@@ -129,7 +131,6 @@ const RepresentativeSearchModal = ({ isOpen, onClose, onSelect }) => {
       >
         <div
           className="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 pointer-events-auto"
-          onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center justify-between p-6 border-b border-slate-100">
             <div>

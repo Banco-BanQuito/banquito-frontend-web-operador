@@ -3,7 +3,6 @@ import {
   LayoutDashboard,
   Users,
   UserPlus,
-  Repeat,
   Building2,
   CalendarDays,
   Landmark,

@@ -23,9 +23,17 @@ const getUserId = () => {
         const obj = JSON.parse(raw);
         const maybeId = obj?.user?.id || obj?.coreUserId || obj?.userId || obj?.session?.coreUserId || obj?.session?.user?.id || obj?.session?.userId;
         if (maybeId) return String(maybeId);
-      } catch (_) {}
+      } catch (error) {
+        if (import.meta.env.DEV) {
+          console.debug('Invalid party session payload ignored.', error);
+        }
+      }
     }
-  } catch (e) {}
+  } catch (error) {
+    if (import.meta.env.DEV) {
+      console.debug('Unable to inspect party session.', error);
+    }
+  }
   return null;
 };
 

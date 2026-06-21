@@ -54,8 +54,9 @@ export const CustomerListPage = () => {
       <form onSubmit={handleSearch} className="bg-white p-6 rounded-lg shadow mb-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
           <div>
-            <label className="block text-sm font-medium mb-2">Tipo de identificación</label>
+            <label htmlFor="customer-list-id-type" className="block text-sm font-medium mb-2">Tipo de identificación</label>
             <select
+              id="customer-list-id-type"
               value={idType}
               onChange={(e) => setIdType(e.target.value)}
               className="w-full p-2 border rounded"
@@ -66,8 +67,9 @@ export const CustomerListPage = () => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">Número de identificación</label>
+            <label htmlFor="customer-list-identification" className="block text-sm font-medium mb-2">Número de identificación</label>
             <input
+              id="customer-list-identification"
               type="text"
               value={identification}
               onChange={(e) => setIdentification(e.target.value)}

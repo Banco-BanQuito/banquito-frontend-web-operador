@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { getAllBranches, createBranch } from '../api/branchApi';
-import ConfirmModal from '../components/ui/ConfirmModal';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 
 export const BranchesPage = () => {
@@ -132,8 +131,9 @@ export const BranchesPage = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Código</label>
+              <label htmlFor="branch-code" className="block text-sm font-medium mb-2">Código</label>
               <input
+                id="branch-code"
                 type="text"
                 name="code"
                 value={formData.code}
@@ -143,8 +143,9 @@ export const BranchesPage = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Nombre</label>
+              <label htmlFor="branch-name" className="block text-sm font-medium mb-2">Nombre</label>
               <input
+                id="branch-name"
                 type="text"
                 name="name"
                 value={formData.name}
@@ -154,8 +155,9 @@ export const BranchesPage = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Ciudad</label>
+              <label htmlFor="branch-city" className="block text-sm font-medium mb-2">Ciudad</label>
               <input
+                id="branch-city"
                 type="text"
                 name="city"
                 value={formData.city}

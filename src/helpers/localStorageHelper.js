@@ -34,5 +34,5 @@ export const clearSession = () => {
 
 export const isSessionValid = () => {
   const session = getSession();
-  return session && session.isAuthenticated && session.coreUserId;
+  return session?.isAuthenticated && session.coreUserId;
 };

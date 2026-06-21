@@ -68,10 +68,12 @@ export const CustomerSearchPage = () => {
         <form onSubmit={handleSearch}>
           <div className="flex flex-col md:flex-row gap-4 items-end">
             <div className="flex-1">
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+              <label htmlFor="customer-search-id-type" className="block text-sm font-semibold text-slate-700 mb-1.5">
                 Tipo de Identificación
+              
               </label>
               <select
+                id="customer-search-id-type"
                 value={identificationType}
                 onChange={(e) => setIdentificationType(e.target.value)}
                 className="w-full px-3 py-2.5 border border-slate-300 rounded-lg text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
@@ -83,10 +85,12 @@ export const CustomerSearchPage = () => {
             </div>
 
             <div className="flex-1">
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+              <label htmlFor="customer-search-identification" className="block text-sm font-semibold text-slate-700 mb-1.5">
                 Número de Identificación
+              
               </label>
               <input
+                id="customer-search-identification"
                 type="text"
                 value={identificationNumber}
                 onChange={(e) => setIdentificationNumber(e.target.value)}

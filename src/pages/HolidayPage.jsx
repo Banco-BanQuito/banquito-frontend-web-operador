@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Calendar, Trash2, Plus, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Calendar, Trash2, Plus, AlertCircle } from 'lucide-react';
 import { getAllHolidays } from '../api/holidayApi';
 
 export const HolidayManagement = () => {

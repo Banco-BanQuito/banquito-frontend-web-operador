@@ -26,7 +26,7 @@ function generateUuid() {
     return `${hex.slice(0, 4).join('')}-${hex.slice(4, 6).join('')}-${hex.slice(6, 8).join('')}-${hex.slice(8, 10).join('')}-${hex.slice(10, 16).join('')}`;
   }
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0;
+    const r = Math.trunc(Math.random() * 16);
     const v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
@@ -53,6 +53,12 @@ const OkIcon = () => (
   <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
   </svg>
+);
+
+const Label = ({ children, required }) => (
+  <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+    {children}{required && <span className="text-red-500 ml-0.5">*</span>}
+  </label>
 );
 
 const AccountFeedback = ({ info, requireActive = false }) => {
@@ -177,7 +183,7 @@ export const TransactionFormPage = () => {
     destInfo.found === true &&
     !!transferForm.amount &&
     validateCurrency(transferForm.amount) &&
-    parseFloat(transferForm.amount) > 0;
+    Number.parseFloat(transferForm.amount) > 0;
 
   const showTransferHint =
     !isTransferReady &&
@@ -253,7 +259,7 @@ export const TransactionFormPage = () => {
     try {
       const response = await debit({
         accountNumber: debitForm.accountNumber,
-        amount: parseFloat(debitForm.amount),
+        amount: Number.parseFloat(debitForm.amount),
         subtypeCode: debitForm.subtypeCode,
         transactionUuid: generateUuid(),
         description: debitForm.description || 'Débito',
@@ -302,7 +308,7 @@ export const TransactionFormPage = () => {
     try {
       const response = await credit({
         accountNumber: creditForm.accountNumber,
-        amount: parseFloat(creditForm.amount),
+        amount: Number.parseFloat(creditForm.amount),
         subtypeCode: creditForm.subtypeCode,
         transactionUuid: generateUuid(),
         description: creditForm.description || 'Crédito',
@@ -352,7 +358,7 @@ export const TransactionFormPage = () => {
       const response = await transfer({
         originAccountNumber: transferForm.sourceAccount,
         destinationAccountNumber: transferForm.destinationAccount,
-        amount: parseFloat(transferForm.amount),
+        amount: Number.parseFloat(transferForm.amount),
         transactionUuid: generateUuid(),
         subtypeCode: 'TRANSFER',
         description: transferForm.description || 'Transferencia',
@@ -386,12 +392,6 @@ export const TransactionFormPage = () => {
     setFieldError('');
     setSuccess(null);
   };
-
-  const Label = ({ children, required }) => (
-    <label className="block text-sm font-semibold text-slate-700 mb-1.5">
-      {children}{required && <span className="text-red-500 ml-0.5">*</span>}
-    </label>
-  );
 
   return (
     <div className="max-w-2xl mx-auto">

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Calendar, Trash2, Plus, AlertCircle } from 'lucide-react';
+import { Calendar, Trash2, AlertCircle } from 'lucide-react';
 import { getAllHolidays } from '../api/holidayApi';
 
 export const HolidayManagement = () => {
@@ -81,10 +81,6 @@ export const HolidayManagement = () => {
           <h1 className="text-2xl font-bold text-slate-800">Gestión de Feriados</h1>
           <p className="text-sm text-slate-500 mt-0.5">Administre los días no laborables del sistema bancario</p>
         </div>
-        <button className="bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 font-medium text-sm transition-colors flex items-center gap-2">
-          <Plus size={18} />
-          Nuevo Feriado
-        </button>
       </div>
 
       {error && (
